@@ -2,6 +2,8 @@ import puppeteer from "puppeteer";
 
 import { sendDiscordMessage } from "./discord.js";
 import { timeAgo } from "./utils/time.js";
+import { connectToDatabase } from "./db/db.js";
+import { ProcessedLink } from "./db/model.js";
 
 const craigslistLinks = [
   "https://limaohio.craigslist.org/search/yorkshire-oh/cpg?cc=gb&lang=en&lat=40.3098&lon=-84.4664&search_distance=1000#search=1~thumb~0~0",
@@ -12,6 +14,8 @@ const craigslistLinks = [
 
 async function scrape() {
   let browser;
+  await connectToDatabase();
+
   try {
     browser = await puppeteer.launch({
       timeout: 0,
@@ -76,12 +80,25 @@ async function scrape() {
     }
 
     for (const listing of recentListings) {
+      const existingLink = await ProcessedLink.findOne({ link: listing.link });
+      if (existingLink) {
+        console.log(`Skipping duplicate listing: ${listing.link}`);
+        continue;
+      }
+
       const message = `\n**Title:** **${
         listing.title
       }**\n\n**Posted:** ${timeAgo(listing.posted)}\n\n**Link:** ${
         listing.link
       }`;
       await sendDiscordMessage(message);
+
+      try {
+        await ProcessedLink.create({ link: listing.link });
+        console.log(`Processed and saved link: ${listing.link}`);
+      } catch (error) {
+        console.error(`Error saving link to database: ${error.message}`);
+      }
     }
   } catch (error) {
     console.error("An error occurred:", error.message || error);
