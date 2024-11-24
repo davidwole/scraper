@@ -15,9 +15,6 @@ async function scrape() {
   try {
     browser = await puppeteer.launch({
       timeout: 0,
-      args: chrome.args,
-      executablePath: await chrome.executablePath,
-      headless: chrome.headless,
     });
 
     const processLink = async (url) => {
