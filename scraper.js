@@ -61,7 +61,7 @@ async function scrape() {
     );
 
     const testTimeFilter = new Date(Date.now() - 60 * 60 * 1000);
-    const timeFilter = new Date(Date.now() - 2 * 60 * 60 * 1000);
+    const timeFilter = new Date(Date.now() - 5 * 60 * 1000);
 
     const testRecentListings = allListings
       .flat()
