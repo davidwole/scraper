@@ -56,13 +56,18 @@ async function scrape() {
       craigslistLinks.map((link) => processLink(link))
     );
 
-    console.log(allListings.slice(0, 5));
-
+    const testTimeFilter = new Date(Date.now() - 60 * 60 * 1000);
     const timeFilter = new Date(Date.now() - 15 * 60 * 1000);
+
+    const testRecentListings = allListings
+      .flat()
+      .filter((item) => new Date(item.posted) > testTimeFilter);
 
     const recentListings = allListings
       .flat()
       .filter((item) => new Date(item.posted) > timeFilter);
+
+    console.log(testRecentListings);
 
     if (recentListings.length === 0) {
       console.log(`No New Listings`);
@@ -78,8 +83,6 @@ async function scrape() {
       }`;
       await sendDiscordMessage(message);
     }
-
-    console.log(recentListings);
   } catch (error) {
     console.error("An error occurred:", error.message || error);
   } finally {
