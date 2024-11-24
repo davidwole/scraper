@@ -14,7 +14,7 @@ const craigslistLinks = [
 
 async function scrape() {
   let browser;
-  await connectToDatabase();
+  // await connectToDatabase();
 
   try {
     browser = await puppeteer.launch({
@@ -61,7 +61,7 @@ async function scrape() {
     );
 
     const testTimeFilter = new Date(Date.now() - 60 * 60 * 1000);
-    const timeFilter = new Date(Date.now() - 15 * 60 * 1000);
+    const timeFilter = new Date(Date.now() - 2 * 60 * 60 * 1000);
 
     const testRecentListings = allListings
       .flat()
@@ -80,11 +80,11 @@ async function scrape() {
     }
 
     for (const listing of recentListings) {
-      const existingLink = await ProcessedLink.findOne({ link: listing.link });
-      if (existingLink) {
-        console.log(`Skipping duplicate listing: ${listing.link}`);
-        continue;
-      }
+      // const existingLink = await ProcessedLink.findOne({ link: listing.link });
+      // if (existingLink) {
+      //   console.log(`Skipping duplicate listing: ${listing.link}`);
+      //   continue;
+      // }
 
       const message = `\n**Title:** **${
         listing.title
@@ -93,12 +93,12 @@ async function scrape() {
       }`;
       await sendDiscordMessage(message);
 
-      try {
-        await ProcessedLink.create({ link: listing.link });
-        console.log(`Processed and saved link: ${listing.link}`);
-      } catch (error) {
-        console.error(`Error saving link to database: ${error.message}`);
-      }
+      // try {
+      //   await ProcessedLink.create({ link: listing.link });
+      //   console.log(`Processed and saved link: ${listing.link}`);
+      // } catch (error) {
+      //   console.error(`Error saving link to database: ${error.message}`);
+      // }
     }
   } catch (error) {
     console.error("An error occurred:", error.message || error);
