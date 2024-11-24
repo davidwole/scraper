@@ -1,6 +1,5 @@
-// import puppeteer from "puppeteer";
-import puppeteer from "puppeteer-core";
-import chrome from "chrome-aws-lambda";
+import puppeteer from "puppeteer";
+
 import { sendDiscordMessage } from "./discord.js";
 import { timeAgo } from "./utils/time.js";
 
