@@ -56,7 +56,9 @@ async function scrape() {
       craigslistLinks.map((link) => processLink(link))
     );
 
-    const timeFilter = new Date(Date.now() - 10 * 60 * 1000);
+    console.log(allListings.slice(0, 5));
+
+    const timeFilter = new Date(Date.now() - 15 * 60 * 1000);
 
     const recentListings = allListings
       .flat()
