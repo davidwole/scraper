@@ -67,8 +67,6 @@ async function scrape() {
       .flat()
       .filter((item) => new Date(item.posted) > timeFilter);
 
-    console.log(testRecentListings);
-
     if (recentListings.length === 0) {
       console.log(`No New Listings`);
       await browser.close();
