@@ -1,7 +1,7 @@
 import puppeteer from "puppeteer";
 import mongoose from "mongoose";
+import keywords from "./keywords.js";
 
-import { sendDiscordMessage } from "./discord.js";
 import { timeAgo } from "./utils/time.js";
 import { connectToDatabase } from "./db/db.js";
 import { ProcessedLink } from "./db/model.js";
@@ -83,7 +83,19 @@ async function scrape() {
       return;
     }
 
-    for (const listing of recentListings) {
+    console.log(recentListings);
+
+    const keywordFiltered = recentListings.filter(({ title }) =>
+      keywords.some((keyword) => {
+        const pattern = new RegExp(
+          `\\b${keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}\\b`,
+          "i"
+        );
+        return pattern.test(title);
+      })
+    );
+
+    for (const listing of keywordFiltered) {
       const existingLink = await ProcessedLink.findOne({ link: listing.link });
       const existingTitle = await ProcessedLink.findOne({
         title: listing.title,
